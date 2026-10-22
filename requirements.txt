@@ -2,5 +2,3 @@ Flask
 gunicorn
 rembg
 Pillow
-onnxruntime
-numpy
