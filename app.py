@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "AI Background Changer API is Live!"
+    return "AI Background Changer API with Themes is Live!"
 
 @app.route('/api/change-background', methods=['POST'])
 def change_background():
@@ -16,15 +16,29 @@ def change_background():
         return jsonify({"error": "No image uploaded"}), 400
     
     file = request.files['image']
-    bg_color = request.form.get('background', 'white')
+    bg_option = request.form.get('background', 'white').lower()
     
     try:
-        input_image = Image.open(file.stream)
+        input_image = Image.open(file.stream).convert("RGBA")
+        
+        # 1. AI ki madad se background remove karna
         output_image = remove(input_image)
+        size = output_image.size
         
-        background = Image.new("RGBA", output_image.size, bg_color)
-        final_image = Image.alpha_composite(background.convert("RGBA"), output_image.convert("RGBA"))
+        # 2. Background option ke hisab se set karna
+        if bg_option == 'garden' or bg_option == 'summer':
+            # Garden / Summer ke liye natural green/outdoor tone ya scenic background
+            background = Image.new("RGBA", size, (120, 200, 120, 255)) # Nature green tone
+        elif bg_option == 'sky' or bg_option == 'blue':
+            background = Image.new("RGBA", size, (135, 206, 235, 255)) # Sky blue tone
+        else:
+            # Agar koi solid color ya hex code bheja ho (jaise white, red, etc.)
+            background = Image.new("RGBA", size, bg_option)
+            
+        # Foreground person ko background ke upar merge karna
+        final_image = Image.alpha_composite(background, output_image)
         
+        # Output image ko JPEG format me return karna
         img_io = io.BytesIO()
         final_image.convert("RGB").save(img_io, 'JPEG', quality=90)
         img_io.seek(0)
