@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "AI Background Changer API is Running Successfully!"
+    return "AI Background Changer API is Live!"
 
 @app.route('/api/change-background', methods=['POST'])
 def change_background():
