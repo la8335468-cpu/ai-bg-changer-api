@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "AI Background Changer API is Running!"
+    return "AI Background Changer API is Running Successfully!"
 
 @app.route('/api/change-background', methods=['POST'])
 def change_background():
@@ -34,6 +34,5 @@ def change_background():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    # Render ke dynamic PORT ko detect karne ke liye 0.0.0.0 zaroori hai
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
